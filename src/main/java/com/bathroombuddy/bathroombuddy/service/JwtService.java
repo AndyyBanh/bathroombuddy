@@ -41,7 +41,7 @@ public class JwtService {
     }
 
     private Key getSigninKey() {
-        byte [] keyBytes = Decoders.BASE64.decode(secretKey);
+        byte [] keyBytes = Decoders.BASE64.decode(this.secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
@@ -50,7 +50,7 @@ public class JwtService {
     }
 
     public String generateToken(Map<String, Object> extractClaims, UserDetails userDetails) {
-        return buildToken(extractClaims, userDetails, jwtExpiration);
+        return buildToken(extractClaims, userDetails, this.jwtExpiration);
     }
 
     private String buildToken(Map<String, Object> extractClaims, UserDetails userDetails, long expiration) {
@@ -66,7 +66,7 @@ public class JwtService {
 
 
     public long getExpirationTime() {
-        return jwtExpiration;
+        return this.jwtExpiration;
     }
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
