@@ -1,11 +1,12 @@
 package com.bathroombuddy.bathroombuddy.controller;
 
+import com.bathroombuddy.bathroombuddy.dto.RequestDto;
 import com.bathroombuddy.bathroombuddy.model.Request;
 import com.bathroombuddy.bathroombuddy.service.RequestService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -14,15 +15,27 @@ import java.util.List;
 public class RequestController {
     private final RequestService requestService;
 
+    @Autowired
     public RequestController(RequestService requestService) {
         this.requestService = requestService;
     }
 
-    @GetMapping("/")
-    public ResponseEntity<List<Request>> getAllRequests() {
-        List <Request> requests = this.requestService.getAllRequests();;
-        return ResponseEntity.ok(requests);
+    @GetMapping
+    public ResponseEntity<List<RequestDto>> getAllRequests() {
+        return ResponseEntity.ok(this.requestService.getAllRequests());
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<RequestDto> getRequestById(@PathVariable Long id) {
+        return ResponseEntity.ok(this.requestService.getRequestById(id));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteRequest(@PathVariable Long id) {
+        this.requestService.deleteRequest(id);
+        return new ResponseEntity<>("Request deleted",HttpStatus.OK);
+    }
+
 
 
 }

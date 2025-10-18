@@ -19,7 +19,7 @@ public class Supplies {
     private String type;
     @Column(nullable = false)
     private long quantity;
-    @Column(name = "lastReplenished")
+    @Column(name = "last_replenished")
     private LocalDateTime lastReplenished;
 
     public Supplies() {
