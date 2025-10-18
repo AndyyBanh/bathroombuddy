@@ -37,6 +37,7 @@ public class SuppliesController {
 
     @PostMapping
     public ResponseEntity<SuppliesDto> createSupplies(@RequestBody SuppliesDto suppliesDto) {
+        System.out.println("Creating supply: " + suppliesDto.getType());
         SuppliesDto created = this.suppliesService.createSupplies(suppliesDto);
         return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
