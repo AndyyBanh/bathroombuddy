@@ -57,7 +57,6 @@ public class SuppliesServiceImpl implements SuppliesService {
         supply.setLastReplenished(suppliesDto.getLastReplenished() != null ? suppliesDto.getLastReplenished() : LocalDateTime.now());
 
         Supplies newSupply = this.suppliesRepository.save(supply);
-        System.out.println("Saved supply with Id: " + newSupply.getId());
 
         SuppliesDto supplyResponse = new SuppliesDto();
         supplyResponse.setId(newSupply.getId());
