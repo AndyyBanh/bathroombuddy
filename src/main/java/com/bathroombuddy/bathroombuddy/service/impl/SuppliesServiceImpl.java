@@ -1,6 +1,7 @@
 package com.bathroombuddy.bathroombuddy.service.impl;
 
 import com.bathroombuddy.bathroombuddy.dto.SuppliesDto;
+import com.bathroombuddy.bathroombuddy.exceptions.SuppliesNotFoundException;
 import com.bathroombuddy.bathroombuddy.model.Supplies;
 import com.bathroombuddy.bathroombuddy.repository.SuppliesRepository;
 import com.bathroombuddy.bathroombuddy.service.SuppliesService;
@@ -38,13 +39,13 @@ public class SuppliesServiceImpl implements SuppliesService {
 
     @Override
     public SuppliesDto getSuppliesById(Long id) {
-        Supplies supply = this.suppliesRepository.findById(id).orElseThrow(() -> new IllegalStateException("Supplies with id " + id + " not found"));
+        Supplies supply = this.suppliesRepository.findById(id).orElseThrow(() -> new SuppliesNotFoundException("Supplies with associated id " + id + " not found"));
         return mapToDto(supply);
     }
 
     @Override
     public void deleteSuppliesById(Long id) {
-        Supplies supply = this.suppliesRepository.findById(id).orElseThrow(() -> new IllegalStateException("Supplies with id " + id + " not found"));
+        Supplies supply = this.suppliesRepository.findById(id).orElseThrow(() -> new SuppliesNotFoundException("Supplies with associated id " + id + " not found"));
         this.suppliesRepository.delete(supply);
     }
 
@@ -69,7 +70,7 @@ public class SuppliesServiceImpl implements SuppliesService {
 
     @Override
     public SuppliesDto updateSupplies(SuppliesDto suppliesDto, Long id) {
-        Supplies supply = this.suppliesRepository.findById(id).orElseThrow(() -> new IllegalStateException("Supplies with id " + id + " not found"));
+        Supplies supply = this.suppliesRepository.findById(id).orElseThrow(() -> new SuppliesNotFoundException("Supplies with associated id " + id + " not found"));
 
         supply.setType(suppliesDto.getType());
         supply.setQuantity(suppliesDto.getQuantity());

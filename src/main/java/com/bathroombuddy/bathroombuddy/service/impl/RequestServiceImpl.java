@@ -1,6 +1,9 @@
 package com.bathroombuddy.bathroombuddy.service.impl;
 
 import com.bathroombuddy.bathroombuddy.dto.RequestDto;
+import com.bathroombuddy.bathroombuddy.exceptions.RequestNotFoundException;
+import com.bathroombuddy.bathroombuddy.exceptions.SuppliesNotFoundException;
+import com.bathroombuddy.bathroombuddy.exceptions.WashroomNotFoundException;
 import com.bathroombuddy.bathroombuddy.model.Request;
 import com.bathroombuddy.bathroombuddy.model.Supplies;
 import com.bathroombuddy.bathroombuddy.model.Washroom;
@@ -32,7 +35,7 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public RequestDto getRequestById(Long id) {
-        Request request = this.requestRepository.findById(id).orElseThrow(() -> new IllegalStateException("Request with id " + id + " not found"));
+        Request request = this.requestRepository.findById(id).orElseThrow(() -> new RequestNotFoundException("Request with associated id " + id + " not found"));
         return mapToDTo(request);
     }
 
@@ -41,8 +44,8 @@ public class RequestServiceImpl implements RequestService {
     public RequestDto createRequest(RequestDto requestDto) {
         Request request = mapToEntity(requestDto);
 
-        Supplies supplies = this.suppliesRepository.findById(requestDto.getSuppliesId()).orElseThrow(() -> new IllegalStateException("Supplies with id " + requestDto.getSuppliesId() + " not found"));
-        Washroom washroom = this.washroomRepository.findById(requestDto.getWashroomId()).orElseThrow(() -> new IllegalStateException("Washroom with id " + requestDto.getWashroomId() + " not found"));
+        Supplies supplies = this.suppliesRepository.findById(requestDto.getSuppliesId()).orElseThrow(() -> new SuppliesNotFoundException("Supplies with associated id " + requestDto.getSuppliesId() + " not found"));
+        Washroom washroom = this.washroomRepository.findById(requestDto.getWashroomId()).orElseThrow(() -> new WashroomNotFoundException("Washroom with associated id " + requestDto.getWashroomId() + " not found"));
 
         request.setSupplies(supplies);
         request.setWashroom(washroom);
@@ -52,10 +55,10 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public RequestDto updateRequest(RequestDto requestDto, Long id) {
-        Request request = this.requestRepository.findById(id).orElseThrow(() -> new IllegalStateException("Request with id " + id + " not found"));
+        Request request = this.requestRepository.findById(id).orElseThrow(() -> new RequestNotFoundException("Request with associated id " + id + " not found"));
 
-        Supplies supplies = this.suppliesRepository.findById(requestDto.getSuppliesId()).orElseThrow(() -> new IllegalStateException("Supplies with id " + requestDto.getSuppliesId() + " not found"));
-        Washroom washroom = this.washroomRepository.findById(requestDto.getWashroomId()).orElseThrow(() -> new IllegalStateException("Washroom with id " + requestDto.getWashroomId() + " not found"));
+        Supplies supplies = this.suppliesRepository.findById(requestDto.getSuppliesId()).orElseThrow(() -> new SuppliesNotFoundException("Supplies with associated id " + id + " not found"));
+        Washroom washroom = this.washroomRepository.findById(requestDto.getWashroomId()).orElseThrow(() -> new WashroomNotFoundException("Washroom with associated id " + id + " not found"));
 
         request.setStatus(requestDto.getStatus());
         request.setSupplies(supplies);
@@ -67,7 +70,7 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public void deleteRequest(Long id) {
-        Request request = this.requestRepository.findById(id).orElseThrow(() -> new IllegalStateException("Request with id " + id + " not found"));
+        Request request = this.requestRepository.findById(id).orElseThrow(() -> new RequestNotFoundException("Request with associated id " + id + " not found"));
         this.requestRepository.delete(request);
     }
 

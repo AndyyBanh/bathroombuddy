@@ -1,6 +1,7 @@
 package com.bathroombuddy.bathroombuddy.service.impl;
 
 import com.bathroombuddy.bathroombuddy.dto.WashroomDto;
+import com.bathroombuddy.bathroombuddy.exceptions.WashroomNotFoundException;
 import com.bathroombuddy.bathroombuddy.model.Washroom;
 import com.bathroombuddy.bathroombuddy.repository.WashroomRepository;
 import com.bathroombuddy.bathroombuddy.service.WashroomService;
@@ -34,7 +35,7 @@ public class WashroomServiceImpl implements WashroomService {
 
     @Override
     public WashroomDto getWashroomById(Long id) {
-        Washroom washroom = this.washroomRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Washroom not found"));
+        Washroom washroom = this.washroomRepository.findById(id).orElseThrow(() -> new WashroomNotFoundException("Washroom with associated id " + id + " not found"));
         return mapToDto(washroom);
     }
 
@@ -47,7 +48,7 @@ public class WashroomServiceImpl implements WashroomService {
 
     @Override
     public WashroomDto updateWashroom(WashroomDto washroomDto, Long id) {
-        Washroom washroom = this.washroomRepository.findById(id).orElseThrow(() -> new IllegalStateException("Washroom with id " + id + " not found"));
+        Washroom washroom = this.washroomRepository.findById(id).orElseThrow(() -> new WashroomNotFoundException("Washroom with associated id " + id + " not found"));
         washroom.setName(washroomDto.getName());
         washroom.setFloor(washroomDto.getFloor());
         this.washroomRepository.save(washroom);
@@ -56,7 +57,7 @@ public class WashroomServiceImpl implements WashroomService {
 
     @Override
     public void deleteWashroomById(Long id) {
-        Washroom washroom = this.washroomRepository.findById(id).orElseThrow(() -> new IllegalStateException("Washroom with id " + id + " not found"));
+        Washroom washroom = this.washroomRepository.findById(id).orElseThrow(() -> new WashroomNotFoundException("Washroom with associated id " + id + " not found"));
         this.washroomRepository.delete(washroom);
     }
 

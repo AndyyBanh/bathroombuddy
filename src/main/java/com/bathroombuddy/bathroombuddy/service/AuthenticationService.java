@@ -2,6 +2,8 @@ package com.bathroombuddy.bathroombuddy.service;
 
 import com.bathroombuddy.bathroombuddy.dto.LoginUserDto;
 import com.bathroombuddy.bathroombuddy.dto.RegisterUserDto;
+import com.bathroombuddy.bathroombuddy.exceptions.UserAlreadyExistsException;
+import com.bathroombuddy.bathroombuddy.exceptions.UserNotFoundException;
 import com.bathroombuddy.bathroombuddy.model.User;
 import com.bathroombuddy.bathroombuddy.repository.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,7 +25,7 @@ public class AuthenticationService {
 
     public User signup(RegisterUserDto input) {
         if (this.userRepository.findByEmail(input.getEmail()).isPresent()) {
-            throw new RuntimeException("Email already exists");
+            throw new UserAlreadyExistsException("User already exists");
         }
 
         User user = new User(input.getUsername(), this.passwordEncoder.encode(input.getPassword()), input.getEmail());
@@ -31,7 +33,7 @@ public class AuthenticationService {
     }
 
     public User authenticate(LoginUserDto input) {
-        User user = this.userRepository.findByEmail(input.getEmail()).orElseThrow(() -> new RuntimeException("User email not found"));
+        User user = this.userRepository.findByEmail(input.getEmail()).orElseThrow(() -> new UserNotFoundException("User not found"));
 
         this.authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(input.getEmail(), input.getPassword()));
         return user;
