@@ -2,7 +2,11 @@ package com.bathroombuddy.bathroombuddy.service.impl;
 
 import com.bathroombuddy.bathroombuddy.dto.RequestDto;
 import com.bathroombuddy.bathroombuddy.model.Request;
+import com.bathroombuddy.bathroombuddy.model.Supplies;
+import com.bathroombuddy.bathroombuddy.model.Washroom;
 import com.bathroombuddy.bathroombuddy.repository.RequestRepository;
+import com.bathroombuddy.bathroombuddy.repository.SuppliesRepository;
+import com.bathroombuddy.bathroombuddy.repository.WashroomRepository;
 import com.bathroombuddy.bathroombuddy.service.RequestService;
 import org.springframework.stereotype.Service;
 
@@ -12,9 +16,13 @@ import java.util.stream.Collectors;
 @Service
 public class RequestServiceImpl implements RequestService {
     private final RequestRepository requestRepository;
+    private final SuppliesRepository suppliesRepository;
+    private final WashroomRepository washroomRepository;
 
-    public RequestServiceImpl(RequestRepository requestRepository) {
+    public RequestServiceImpl(RequestRepository requestRepository, SuppliesRepository suppliesRepository, WashroomRepository washroomRepository) {
         this.requestRepository = requestRepository;
+        this.suppliesRepository = suppliesRepository;
+        this.washroomRepository = washroomRepository;
     }
 
     @Override
@@ -28,11 +36,34 @@ public class RequestServiceImpl implements RequestService {
         return mapToDTo(request);
     }
 
-    // create when washroom and supplies are created
-//    @Override
-//    public RequestDto createRequest() {
-//
-//    }
+
+    @Override
+    public RequestDto createRequest(RequestDto requestDto) {
+        Request request = mapToEntity(requestDto);
+
+        Supplies supplies = this.suppliesRepository.findById(requestDto.getSuppliesId()).orElseThrow(() -> new IllegalStateException("Supplies with id " + requestDto.getSuppliesId() + " not found"));
+        Washroom washroom = this.washroomRepository.findById(requestDto.getWashroomId()).orElseThrow(() -> new IllegalStateException("Washroom with id " + requestDto.getWashroomId() + " not found"));
+
+        request.setSupplies(supplies);
+        request.setWashroom(washroom);
+        this.requestRepository.save(request);
+        return mapToDTo(request);
+    }
+
+    @Override
+    public RequestDto updateRequest(RequestDto requestDto, Long id) {
+        Request request = this.requestRepository.findById(id).orElseThrow(() -> new IllegalStateException("Request with id " + id + " not found"));
+
+        Supplies supplies = this.suppliesRepository.findById(requestDto.getSuppliesId()).orElseThrow(() -> new IllegalStateException("Supplies with id " + requestDto.getSuppliesId() + " not found"));
+        Washroom washroom = this.washroomRepository.findById(requestDto.getWashroomId()).orElseThrow(() -> new IllegalStateException("Washroom with id " + requestDto.getWashroomId() + " not found"));
+
+        request.setStatus(requestDto.getStatus());
+        request.setSupplies(supplies);
+        request.setWashroom(washroom);
+        this.requestRepository.save(request);
+
+        return mapToDTo(request);
+    }
 
     @Override
     public void deleteRequest(Long id) {
@@ -40,18 +71,26 @@ public class RequestServiceImpl implements RequestService {
         this.requestRepository.delete(request);
     }
 
-
-
-
-    // Mapping method
+    // Mapping methods
     private RequestDto mapToDTo(Request request) {
-        RequestDto dto = new RequestDto();
-        dto.setId(request.getId());
-        dto.setType(request.getType().getType());
-        dto.setWashroom(request.getLocation().getName());
-        dto.setStatus(request.getStatus());
-        dto.setCreatedAt(request.getCreatedAt());
-        return dto;
+        RequestDto requestDto = new RequestDto();
+        requestDto.setId(request.getId());
+        requestDto.setStatus(request.getStatus());
+        requestDto.setCreatedAt(request.getCreatedAt());
+        if (request.getWashroom() != null) {
+            requestDto.setWashroomId(request.getWashroom().getId());
+        }
+        if (request.getSupplies() != null) {
+            requestDto.setSuppliesId(request.getSupplies().getId());
+        }
+        return requestDto;
+    }
+
+    private Request mapToEntity(RequestDto requestDto) {
+        Request request = new Request();
+        request.setStatus(requestDto.getStatus());
+
+        return request;
     }
 }
 

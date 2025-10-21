@@ -1,7 +1,9 @@
 package com.bathroombuddy.bathroombuddy.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
@@ -10,18 +12,22 @@ import java.time.LocalDateTime;
 @Table(name = "requests")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Request {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // tells us which supply has to do with request
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "supply_id", nullable = false)
-    private Supplies type;
+    private Supplies supplies;
 
+    // tells us which washroom has to do with the request
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "washroom_id", nullable = false)
-    private Washroom location;
+    private Washroom washroom;
 
     @Column(nullable = false)
     private String status = "PENDING";
@@ -29,11 +35,4 @@ public class Request {
     @Column(updatable = false, nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    public Request() {}
-
-    public Request(Supplies type, Washroom location, String status) {
-        this.type = type;
-        this.location = location;
-        this.status = status;
-    }
 }

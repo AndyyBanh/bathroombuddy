@@ -8,5 +8,6 @@ public interface RequestService {
     List<RequestDto> getAllRequests();
     RequestDto getRequestById(Long id);
     void deleteRequest(Long id);
-
+    RequestDto createRequest(RequestDto requestDto);
+    RequestDto updateRequest(RequestDto requestDto, Long id);
 }

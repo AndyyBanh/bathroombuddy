@@ -36,6 +36,17 @@ public class RequestController {
         return new ResponseEntity<>("Request deleted",HttpStatus.OK);
     }
 
+    @PostMapping
+    public ResponseEntity<RequestDto> createRequest(@RequestBody RequestDto requestDto) {
+        RequestDto created = this.requestService.createRequest(requestDto);
+        return new ResponseEntity<>(created, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<RequestDto> updateRequest(@RequestBody RequestDto requestDto, @PathVariable Long id) {
+        return ResponseEntity.ok(this.requestService.updateRequest(requestDto, id));
+
+    }
 
 
 }
