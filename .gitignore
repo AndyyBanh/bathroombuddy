@@ -37,3 +37,8 @@ out/
 .vscode/
 
 .env
+
+#Frontend
+bathroombuddy-frontend/node_modules/
+bathroombuddy-frontend/build/
+bathroombuddy-frontend/.env
