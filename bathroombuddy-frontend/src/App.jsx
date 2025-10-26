@@ -10,10 +10,11 @@ import Login from './pages/auth/Login'
 import Dashboard from './pages/dashboard/Dashboard'
 import Home from './pages/auth/Home'
 import Signup from './pages/auth/Signup'
+import UserProvider from './context/userContext'
 
 const App = () => {
   return (
-    <div>
+    <UserProvider>
       <Router>
         <Routes>
           <Route path='/' element={<Root />} />
@@ -23,7 +24,7 @@ const App = () => {
           <Route path ='/dashboard' element={<Dashboard />} />
         </Routes>
       </Router>
-    </div>
+    </UserProvider>
   )
 }
 
