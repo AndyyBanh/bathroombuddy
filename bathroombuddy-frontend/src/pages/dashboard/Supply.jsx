@@ -1,7 +1,7 @@
 import React from 'react'
 import SideBar from '../../components/SideBar'
 
-const Dashboard = () => {
+const Supply = () => {
   return (
     <div>
       <SideBar />
@@ -10,4 +10,4 @@ const Dashboard = () => {
   )
 }
 
-export default Dashboard
+export default Supply

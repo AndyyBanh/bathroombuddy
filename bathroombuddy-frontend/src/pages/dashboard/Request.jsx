@@ -1,13 +1,13 @@
 import React from 'react'
 import SideBar from '../../components/SideBar'
 
-const Dashboard = () => {
+const Request = () => {
   return (
     <div>
       <SideBar />
-    
+      
     </div>
   )
 }
 
-export default Dashboard
+export default Request

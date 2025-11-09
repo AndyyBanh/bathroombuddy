@@ -11,6 +11,9 @@ import Dashboard from './pages/dashboard/Dashboard'
 import Home from './pages/auth/Home'
 import Signup from './pages/auth/Signup'
 import UserProvider from './context/userContext'
+import Washroom from './pages/dashboard/Washroom'
+import Supply from './pages/dashboard/Supply'
+import Request from './pages/dashboard/Request'
 
 const App = () => {
   return (
@@ -22,6 +25,9 @@ const App = () => {
           <Route path='/login' element={<Login />} />
           <Route path='/signup' element={<Signup />} />
           <Route path ='/dashboard' element={<Dashboard />} />
+          <Route path='/request' element={<Request />} />
+          <Route path='/supply' element={<Supply />} />
+          <Route path='/washroom' element={<Washroom />} />
         </Routes>
       </Router>
     </UserProvider>
