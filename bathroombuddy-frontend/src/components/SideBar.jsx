@@ -3,13 +3,13 @@ import { AiOutlineMenu } from "react-icons/ai";
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../context/userContext';
 
-const SideBar = () => {
+const SideBar = ({ children }) => {
   const [isOpen, setIsOpen] = useState(true);
   const { user, clearUser } = useContext(UserContext);
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.clear();
+    localStorage.removeItem('token');
     clearUser();
     navigate("/");
   };
@@ -70,10 +70,10 @@ const SideBar = () => {
             SignOut
           </button>
         </div>
-        
       </div>
+      <div className='flex-1 overflow-y-auto'>{children}</div>
     </div>
   )
-}
+} 
 
 export default SideBar
