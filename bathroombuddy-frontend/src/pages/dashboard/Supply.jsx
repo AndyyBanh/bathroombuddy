@@ -229,9 +229,7 @@ const Supply = () => {
                 Cancel
               </button>
             </div>
-
           </div>
-
         </Modal>
       </SideBar>
     </div>

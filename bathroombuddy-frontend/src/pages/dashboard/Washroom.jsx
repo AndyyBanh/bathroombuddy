@@ -106,7 +106,7 @@ const Washroom = () => {
   };
 
   const filteredWashroom = washrooms.filter(washroom =>
-    washroom.type.toLowerCase().includes(searchTerm.toLowerCase)
+    washroom.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
   
   return (
@@ -128,8 +128,8 @@ const Washroom = () => {
               type='text'
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder='Search washroom'
-              className='border rounded-lg px-2 py-1.5'
+              placeholder='Search washroom by name'
+              className='border rounded-lg px-2 py-1.5 w-full'
             />  
           </div>
 
@@ -161,10 +161,16 @@ const Washroom = () => {
                       <td className='px-6 py-4 text-center'>{washroom.floor}</td>
                       <td className='px-6 py-4 text-center'>
                         <div className='flex justify-between'>
-                          <button>
+                          <button
+                            onClick={() => handleOpenEditModal(washroom)}
+                            className='text-blue-600'
+                          >
                             Edit
                           </button>
-                          <button>
+                          <button
+                            onClick={() => handleDeleteWashroom(washroom.id)}
+                            className='text-red-500'
+                          >
                             Delete
                           </button>
                         </div>
@@ -186,11 +192,39 @@ const Washroom = () => {
             <div>
               <label className='block font-medium mb-1'>Name</label>
               <input
-              
+                type='text'
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                className='w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-1'
+                placeholder='Washroom 1'
               />
             </div>
-          </div>
+            <div>
+              <label className='block font-medium mb-1'>Floor</label>
+              <input
+                type='text'
+                value={formData.floor}
+                onChange={(e) => setFormData({ ...formData, floor: e.target.value })}
+                className='border rounded-lg w-full px-3 py-2 focus:outline-none focus:ring-1'
+                placeholder='floor 1'
+              />
+            </div>
 
+            <div className='flex justify-between'>
+              <button
+                onClick={handleSubmit}
+                className='bg-blue-500 rounded-lg py-2 px-3 w-fit text-white hover:bg-blue-600 transition-colors'
+              >
+                {editingWashroom ? 'Update' : 'Add'}
+              </button>
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className='bg-red-500 rounded-lg py-2 px-3 w-fit text-white hover:bg-red-600 transition-colors'
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
         </Modal>
       </SideBar>
     </div>
