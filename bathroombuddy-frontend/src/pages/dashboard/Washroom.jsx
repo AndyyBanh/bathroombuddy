@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import SideBar from '../../components/SideBar'
 import { createWashroom, deleteWashroom, getAllWashrooms, updateWashroom } from '../../service/dashboardService';
 import Modal from '../../components/Modal';
@@ -11,6 +11,9 @@ const Washroom = () => {
   const [editingWashroom, setEditingWashroom] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
 
+  useEffect(() => {
+    fetchWashroomsData();
+  }, []);
   
   const handleOpenAddModal = () => {
     setEditingWashroom(null);
@@ -85,16 +88,20 @@ const Washroom = () => {
   };
 
   const handleDeleteWashroom = async (id) => {
-    try {
-      await deleteWashroom(id);
-      fetchWashroomsData();
-    } catch (error) {
-      if (error.response && error.response.data.message) {
-        setError(error.response.data.message);
-      } else {
-        setError('Something went wrong please try again');
+
+    if (window.confirm('Are you sure you want to delete this washroom?')) {
+      try {
+        await deleteWashroom(id);
+        fetchWashroomsData();
+      } catch (error) {
+        if (error.response && error.response.data.message) {
+          setError(error.response.data.message);
+        } else {
+          setError('Something went wrong please try again');
+        }
       }
     }
+    
   };
 
   const handleSubmit = () => {
@@ -128,7 +135,7 @@ const Washroom = () => {
               type='text'
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder='Search washroom by name'
+              placeholder='Search washroom by name...'
               className='border rounded-lg px-2 py-1.5 w-full'
             />  
           </div>
@@ -186,7 +193,7 @@ const Washroom = () => {
         <Modal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
-          title={editingWashroom ? 'Edit washroom' : 'add Washroom'}
+          title={editingWashroom ? 'Edit washroom' : 'Add Washroom'}
         >
           <div className='space-y-4'>
             <div>

@@ -65,16 +65,19 @@ const Supply = () => {
   };
 
   const handleDeleteSupply = async (id) => {
-    try {
-      await deleteSupply(id);
-      fetchSuppliesData();
-    } catch (error) {
-      if (error.response && error.response.data.message) {
-        setError(error.response.data.message);
-      } else {
-        setError('Something went wrong please try again.');
+    if (window.confirm('Are you sure you want to delete this supply?')) {
+      try {
+        await deleteSupply(id);
+        fetchSuppliesData();
+      } catch (error) {
+        if (error.response && error.response.data.message) {
+          setError(error.response.data.message);
+        } else {
+          setError('Something went wrong please try again.');
+        }
       }
     }
+   
   };
 
   const handleUpdateSupply = async () => {
@@ -132,7 +135,7 @@ const Supply = () => {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder='Search by type...'
-                className='border rounded-lg px-2 py-1.5'
+                className='border rounded-lg px-2 py-1.5 w-full'
               />
             </div>
 
