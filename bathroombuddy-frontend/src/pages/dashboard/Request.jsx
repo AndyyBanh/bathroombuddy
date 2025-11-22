@@ -33,7 +33,7 @@ const Request = () => {
     if (washroom) {
       return washroom.name;
     } else {
-      return 'Unknown Washroom Name';
+      return 'Unknown Washroom Name.';
     }
   };
 

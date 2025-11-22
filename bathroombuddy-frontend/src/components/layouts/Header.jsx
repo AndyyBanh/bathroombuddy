@@ -10,7 +10,7 @@ const Header = () => {
         </h1>
 
         <button 
-            className='flex items-center border rounded-3xl px-2.5 py-2 text-sm transition hover:scale-90'
+            className='flex items-center bg-blue-600 rounded-lg text-white hover:bg-blue-700 px-2.5 py-2  transition-colors'
             onClick={() => navigate('/login')}
             >
             Admin Login/Signup
