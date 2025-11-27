@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react'
 import { AiOutlineMenu } from "react-icons/ai";
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../context/userContext';
+import { CiLogout } from "react-icons/ci";
 
 const SideBar = ({ children }) => {
   const [isOpen, setIsOpen] = useState(true);
@@ -62,12 +63,12 @@ const SideBar = ({ children }) => {
         </nav>
 
         {/* footer + logout */}
-        <div className='flex justify-center'>
+        <div className='flex justify-center pb-5'>
           <button
-            className='w-full hover:underline pb-5 rounded-2xl'
+            className='hover:scale-120  transition flex items-center justify-center'
             onClick={handleLogout}
-          >
-            SignOut
+          > 
+            <CiLogout size={24} />
           </button>
         </div>
       </div>
