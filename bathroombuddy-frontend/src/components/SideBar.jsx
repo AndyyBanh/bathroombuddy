@@ -3,6 +3,7 @@ import { AiOutlineMenu } from "react-icons/ai";
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../context/userContext';
 import { CiLogout } from "react-icons/ci";
+import toast from 'react-hot-toast';
 
 const SideBar = ({ children }) => {
   const [isOpen, setIsOpen] = useState(true);
@@ -11,6 +12,7 @@ const SideBar = ({ children }) => {
 
   const handleLogout = () => {
     localStorage.removeItem('token');
+    toast.success('Logged out successfully')
     clearUser();
     navigate("/");
   };

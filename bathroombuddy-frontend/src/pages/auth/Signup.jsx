@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { validateEmail } from '../../utils/helper';
 import { signup } from '../../service/authService';
+import toast from 'react-hot-toast';
 
 const Signup = () => {
   const [username, setUsername] = useState('');
@@ -17,28 +18,33 @@ const Signup = () => {
 
       if (!username) {
         setError('Please enter a username');
+        toast.error('Invaild username');
         return;
       }
 
       if (!validateEmail(email)) {
         setError('Please enter a valid email');
+        toast.error('Invalid email');
         return;
       }
 
       if (!password) {
         setError('Please enter a password');
+        toast.error('Invalid password');
         return;
       }
 
       if (password !== confirmPassword) {
         setError('Passwords do not match');
+        toast.error('Invlaid password');
         return;
       }
 
-      setError('');
+      
 
       try {
         const response = await signup(email, password, username);
+        toast.success('Account succesfully created');
         navigate('/login');
 
       } catch (error) {

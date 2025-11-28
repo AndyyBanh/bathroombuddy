@@ -14,11 +14,13 @@ import UserProvider from './context/userContext'
 import Washroom from './pages/dashboard/Washroom'
 import Supply from './pages/dashboard/Supply'
 import Request from './pages/dashboard/Request'
+import { Toaster } from 'react-hot-toast'
 
 const App = () => {
   return (
     <UserProvider>
       <Router>
+        <Toaster />
         <Routes>
           <Route path='/' element={<Root />} />
           <Route path='/home' element={<Home />} />

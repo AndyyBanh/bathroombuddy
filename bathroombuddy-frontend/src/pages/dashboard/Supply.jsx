@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import SideBar from '../../components/SideBar'
 import Modal from '../../components/Modal'
 import { createSupply, deleteSupply, getAllSupplies, updateSupply } from '../../service/dashboardService';
+import toast from 'react-hot-toast';
 
 const Supply = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -46,11 +47,13 @@ const Supply = () => {
 
     if (!type || !quantity) {
       setError('Missing required fields');
+      toast.error('Missing fields');
       return;
     }
 
     try {
       const response = await createSupply(type, parseInt(quantity));
+      toast.success('Supply successfully created');
       fetchSuppliesData(); // refresh dashboard data
       setIsModalOpen(false);
       setFormData({ type: '', quantity: '' });
@@ -68,6 +71,7 @@ const Supply = () => {
     if (window.confirm('Are you sure you want to delete this supply?')) {
       try {
         await deleteSupply(id);
+        toast.success('Supply successfully deleted');
         fetchSuppliesData();
       } catch (error) {
         if (error.response && error.response.data.message) {
@@ -85,11 +89,13 @@ const Supply = () => {
 
      if (!type || !quantity) {
       setError('Missing required fields');
+      toast.error('Missing fields');
       return;
     }
 
     try {
       await updateSupply(type, parseInt(quantity), editingSupply.id);
+      toast.success('Supply successfully updated');
       fetchSuppliesData();
       setIsModalOpen(false);
       setFormData({ type: '', quantity: '' });

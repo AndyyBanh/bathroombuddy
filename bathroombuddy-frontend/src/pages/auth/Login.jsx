@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { validateEmail } from '../../utils/helper';
 import { login } from '../../service/authService';
 import { UserContext } from '../../context/userContext';
+import toast from 'react-hot-toast';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -18,11 +19,13 @@ const Login = () => {
 
     if (!validateEmail(email)) {
       setError('Please enter a valid email');
+      toast.error('Invalid email');
       return;
     }
 
     if (!password) {
       setError('Please enter the password');
+      toast.error('Invalid password');
       return;
     }
     setError('');
@@ -33,6 +36,7 @@ const Login = () => {
       const { token, user } = response.data;
 
       if (token) {
+        toast.success('Login success');
         localStorage.setItem('token', token);
         updateUser(user);
         navigate('/dashboard');

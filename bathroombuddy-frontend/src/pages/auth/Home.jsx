@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Header from '../../components/layouts/Header'
 import { createRequest, getAllSupplies, getAllWashrooms } from '../../service/dashboardService';
 import Modal from '../../components/Modal';
+import toast from 'react-hot-toast';
 
 
 const Home = () => {
@@ -75,11 +76,13 @@ const Home = () => {
     
     if (!status || !suppliesId || !washroomId) {
       setError('Missing required fields');
+      toast.error('Missing field');
       return;
     }
     
     try {
       const response = await createRequest('PENDING', parseInt(suppliesId), parseInt(washroomId));
+      toast.success('Request succesful');
       setIsModalOpen(false);
       setFormData({ status: '', suppliesId: '', washroomId: '' });
       setError(null);

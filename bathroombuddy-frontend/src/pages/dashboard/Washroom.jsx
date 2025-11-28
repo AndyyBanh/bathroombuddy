@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import SideBar from '../../components/SideBar'
 import { createWashroom, deleteWashroom, getAllWashrooms, updateWashroom } from '../../service/dashboardService';
 import Modal from '../../components/Modal';
+import toast from 'react-hot-toast';
 
 const Washroom = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -46,11 +47,13 @@ const Washroom = () => {
 
     if (!name || !floor) {
         setError('Missing required fields.');
+        toast.error('Missing fields');
         return;
     }
 
     try {
       const response  = await createWashroom(name, floor);
+      toast.success('Washroom successfully created');
       fetchWashroomsData();
       setIsModalOpen(false);
       setFormData({ name: '', floor: '' });
@@ -69,11 +72,13 @@ const Washroom = () => {
 
     if (!name || !floor) {
         setError('Missing required fields.');
+        toast.error('Missing fields');
         return;
     }
 
     try {
       const response = await updateWashroom(name, floor, editingWashroom.id);
+      toast.success('Washroom successfully updated');
       fetchWashroomsData();
       setIsModalOpen(false);
       setFormData({ name: '', floor: '' });
@@ -92,6 +97,7 @@ const Washroom = () => {
     if (window.confirm('Are you sure you want to delete this washroom?')) {
       try {
         await deleteWashroom(id);
+        toast.success('Washroom successfully deleted');
         fetchWashroomsData();
       } catch (error) {
         if (error.response && error.response.data.message) {

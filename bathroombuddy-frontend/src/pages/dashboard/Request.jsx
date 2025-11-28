@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import SideBar from '../../components/SideBar'
 import { createRequest, deleteRequest, getAllRequests, getAllSupplies, getAllWashrooms, updateRequest } from '../../service/dashboardService';
 import Modal from '../../components/Modal';
+import toast from 'react-hot-toast';
 
 const Request = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -99,11 +100,13 @@ const Request = () => {
   
       if (!status || !suppliesId || !washroomId) {
         setError('Missing required fields');
+        toast.error('Missing fields');
         return;
       }
   
       try {
         const response = await createRequest(status, parseInt(suppliesId), parseInt(washroomId));
+        toast.success('Request succesfully created');
         fetchRequestData();
         setIsModalOpen(false);
         setFormData({ status: '', suppliesId: '', washroomId: '' });
@@ -122,6 +125,7 @@ const Request = () => {
     if (window.confirm('Are you sure you want to delete this request?')) {
       try {
           await deleteRequest(id);
+          toast.success('Request successfully deleted');
           fetchRequestData();
       } catch (error) {
         if (error.response && error.response.data.message) {
@@ -138,11 +142,13 @@ const Request = () => {
   
       if (!status || !suppliesId || !washroomId) {
         setError('Missing required fields');
+        toast.error('Missing fields');
         return;
       }
   
       try {
         await updateRequest(status, parseInt(suppliesId), parseInt(washroomId), editingRequest.id);
+        toast.success('Request sucessfully updated');
         fetchRequestData();
         setIsModalOpen(false);
         setFormData({ status: '', suppliesId: '', washroomId: '' });
