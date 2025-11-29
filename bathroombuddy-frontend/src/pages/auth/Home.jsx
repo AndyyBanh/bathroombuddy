@@ -110,7 +110,7 @@ const Home = () => {
               <p className='text-gray-600'>Running out of tolietries?</p>
               <button 
                 onClick={handleOpenAddModal}
-                className='bg-blue-600 text-white rounded-lg px-2.5 py-1 transition hover:scale-90 hover:bg-blue-700 shadow-2xl'
+                className='w-auto bg-blue-600 text-white rounded-lg px-2.5 py-1 transition hover:scale-90 hover:bg-blue-700 shadow-2xl'
               >
                 Request
               </button>

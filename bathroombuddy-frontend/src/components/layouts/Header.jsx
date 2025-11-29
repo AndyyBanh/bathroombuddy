@@ -5,7 +5,7 @@ const Header = () => {
     const navigate = useNavigate();
   return (
     <header className='fixed z-50 w-full backdrop-blur-2xl flex justify-between items-center py-3 px-4 sm:px-20 xl:px-32'>
-        <h1 className='font-bold text-2xl'>
+        <h1 className='font-bold text-2xl tracking-wider'>
             Bathroom Buddy
         </h1>
 
