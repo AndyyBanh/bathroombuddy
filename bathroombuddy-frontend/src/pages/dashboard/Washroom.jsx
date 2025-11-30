@@ -61,8 +61,10 @@ const Washroom = () => {
     } catch (error) {
       if (error.response && error.response.data.message) {
         setError(error.response.data.message);
+        toast.error(error.response.data.message);
       } else {
         setError('Something went wrong please try again.');
+        toast.error('Something went wrong plese try again');
       }
     }
   };
@@ -86,8 +88,10 @@ const Washroom = () => {
     } catch (error) {
       if (error.response && error.response.data.message) {
         setError(error.response.data.message);
+        toast.error(error.response.data.message);
       } else {
         setError('Something went wrong please try again.');
+        toast.error('Something went wrong plese try again');
       }
     }
   };
@@ -102,8 +106,10 @@ const Washroom = () => {
       } catch (error) {
         if (error.response && error.response.data.message) {
           setError(error.response.data.message);
+          toast.error(error.response.data.message);
         } else {
           setError('Something went wrong please try again');
+          toast.error('Something went wrong plese try again');
         }
       }
     }
@@ -209,7 +215,7 @@ const Washroom = () => {
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 className='w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-1'
-                placeholder='Washroom 1'
+                placeholder='Floor 1 Washroom 1'
               />
             </div>
             <div>

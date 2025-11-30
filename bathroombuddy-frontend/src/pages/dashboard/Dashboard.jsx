@@ -3,6 +3,7 @@ import SideBar from '../../components/SideBar'
 import { getAllRequests, getAllSupplies, getAllWashrooms } from '../../service/dashboardService';
 import RadialChart from '../../components/RadialChart';
 import Card from '../../components/Card';
+import toast from 'react-hot-toast';
 
 const Dashboard = () => {
   const [supplies, setSupplies] = useState([]);
@@ -24,9 +25,9 @@ const Dashboard = () => {
       setWashrooms(washroomsResponse.data);
     } catch (error) {
        if (error.response && error.response.data.message) {
-         setError(error.response.data.message);
+         toast.error(error.response.data.message);
        } else {
-         setError('Something went wrong. Please try again.');
+         toast.error('Something went wrong. Please try again.');
        }
     }
   }

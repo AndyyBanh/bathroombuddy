@@ -44,8 +44,10 @@ const Login = () => {
     } catch (error) {
       if (error.response && error.response.data.message) {
         setError(error.response.data.message);
+        toast.error(error.response.data.message);
       } else {
         setError('Something went wrong. Please try again.');
+        toast.error('Something went wrong. Please try again.');
       }
     }
 
