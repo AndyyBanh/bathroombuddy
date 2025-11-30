@@ -87,10 +87,15 @@ const Home = () => {
       setFormData({ status: '', suppliesId: '', washroomId: '' });
       setError(null);
     } catch (error) {
-      if (error.response && error.response.data.message) {
+      if (error.response?.status === 429) {
+        toast.error('Too many request. Please try again in a few minutes');
+        setError('Too many request. Please try again in a few minutes');
+      } else if (error.response && error.response.data.message) {
         setError(error.response.data.message);
+        toast.error(error.response.data.message);
       } else {
         setError('Something went wrong please try again.');
+        toast.error('Something went wrong please try again.');
       }
     }
   };
