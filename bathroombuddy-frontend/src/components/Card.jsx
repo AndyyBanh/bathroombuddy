@@ -1,20 +1,14 @@
-import React from 'react'
-import { BiStats } from "react-icons/bi";
 const Card = ({ title, data, text }) => {
   return (
-    <div className='bg-white rounded-lg p-6 shadow-xl flex flex-col'>
-        <h3 className='text-lg uppercase font-medium tracking-wide mb-4 text-center'>{title}</h3>
-        <div className='flex flex-col items-center justify-center flex-1 py-8'>
-            <span className='text-3xl font-bold'>{data}</span>
-            <span className='text-sm text-gray-600'>Total</span>
-        </div>
-
-        <div className='flex items-center justify-center text-center mt-auto pt-4'>
-            <p className='flex gap-2 text-sm text-gray-600 items-center'>
-                {text} 
-                <BiStats />
-            </p>
-        </div>
+    <div className='bg-white border border-slate-100 rounded-2xl p-6 shadow-sm flex flex-col'>
+      <p className='text-xs font-semibold uppercase tracking-widest text-slate-400 mb-3'>{title}</p>
+      <div className='flex-1 flex flex-col justify-center'>
+        <span className='text-4xl font-bold text-slate-900'>{data}</span>
+        <span className='text-sm text-slate-400 mt-1'>Total</span>
+      </div>
+      <div className='mt-4 pt-4 border-t border-slate-100'>
+        <p className='text-xs text-slate-400'>{text}</p>
+      </div>
     </div>
   )
 }

@@ -1,82 +1,88 @@
 import React, { useContext, useState } from 'react'
-import { AiOutlineMenu } from "react-icons/ai";
-import { useNavigate } from 'react-router-dom';
-import { UserContext } from '../context/userContext';
-import { CiLogout } from "react-icons/ci";
-import toast from 'react-hot-toast';
+import { useNavigate, useLocation } from 'react-router-dom'
+import { LayoutDashboard, ClipboardList, Package, Droplets, LogOut, Menu } from 'lucide-react'
+import { UserContext } from '../context/userContext'
+import toast from 'react-hot-toast'
 
 const SideBar = ({ children }) => {
-  const [isOpen, setIsOpen] = useState(true);
-  const { user, clearUser } = useContext(UserContext);
-  const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(true)
+  const { clearUser } = useContext(UserContext)
+  const navigate = useNavigate()
+  const location = useLocation()
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
+    localStorage.removeItem('token')
     toast.success('Logged out successfully')
-    clearUser();
-    navigate("/");
-  };
-
+    clearUser()
+    navigate('/')
+  }
 
   const menuItems = [
-    { label: 'Dashboard', path: '/dashboard' },
-    { label: 'Request', path: '/request' },
-    { label: 'Supply', path: '/supply' },
-    { label: 'Washroom', path: '/washroom' },
-  ];
+    { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
+    { label: 'Requests',  path: '/request',   icon: ClipboardList },
+    { label: 'Supplies',  path: '/supply',     icon: Package },
+    { label: 'Washrooms', path: '/washroom',   icon: Droplets },
+  ]
 
   return (
-    <div className='h-screen bg-gray-100 flex'>
-      <div className={`${
-        isOpen ? 'w-64' : 'w-20'
-        } bg-linear-to-b from-slate-900 to-slate-800 text-white transition-all duration-200 ease-in-out flex flex-col shadow-xl overflow-hidden`}
-      >
+    <div className='h-screen bg-slate-50 flex'>
+      <div className={`${isOpen ? 'w-56' : 'w-16'} bg-slate-900 text-white flex flex-col shadow-xl overflow-hidden transition-all duration-200 ease-in-out shrink-0`}>
 
-        {/* Header */}
-        <div className={`flex items-center p-4 border-b border-slate-700 ${ isOpen ? 'justify-between' : 'justify-center'} `}>
-          <h1
-            className={`font-bold text-xl transition-opacity duration-200 ${
-              isOpen ? 'opacity-100' : 'opacity-0 w-0'}`}
-          >
-            Bathroom Buddy
-          </h1>
-
+        <div className={`flex items-center p-4 border-b border-slate-700 ${isOpen ? 'justify-between' : 'justify-center'}`}>
+          {isOpen && (
+            <div className='flex items-center gap-2'>
+              <div className='w-7 h-7 bg-blue-600 rounded-lg flex items-center justify-center shrink-0'>
+                <Package className='h-4 w-4 text-white' />
+              </div>
+              <span className='font-bold text-sm tracking-tight'>Bathroom Buddy</span>
+            </div>
+          )}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className='p-2 rounded-lg hover:bg-slate-700 transition-colors shrink-0'
+            className='p-1.5 rounded-lg hover:bg-slate-700 transition-colors shrink-0'
           >
-              {isOpen? <AiOutlineMenu size={20} /> : <AiOutlineMenu size={30} /> }
+            <Menu size={18} />
           </button>
         </div>
 
-        {/* Menu */}
-        <nav className='flex-1 p-4 space-y-2'>
-            {menuItems.map((item) =>
+        <nav className='flex-1 p-3 space-y-1'>
+          {menuItems.map((item) => {
+            const Icon = item.icon
+            const isActive = location.pathname === item.path
+            return (
               <button
                 key={item.path}
                 onClick={() => navigate(item.path)}
-                className='w-full flex flex-col items-center p-2 hover:bg-slate-700 rounded-2xl transition-colors'
+                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors text-sm font-medium
+                  ${isActive
+                    ? 'bg-blue-600 text-white'
+                    : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                  }
+                  ${!isOpen ? 'justify-center' : ''}
+                `}
               >
-                {isOpen ? item.label : ''}
-
-              </button>  
-          )
-            }
+                <Icon size={18} className='shrink-0' />
+                {isOpen && <span>{item.label}</span>}
+              </button>
+            )
+          })}
         </nav>
 
-        {/* footer + logout */}
-        <div className='flex justify-center pb-5'>
+        <div className='p-3 border-t border-slate-700'>
           <button
-            className='hover:scale-120  transition flex items-center justify-center'
             onClick={handleLogout}
-          > 
-            <CiLogout size={24} />
+            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-colors text-sm font-medium ${!isOpen ? 'justify-center' : ''}`}
+          >
+            <LogOut size={18} className='shrink-0' />
+            {isOpen && <span>Logout</span>}
           </button>
         </div>
       </div>
-      <div className='flex-1 overflow-y-auto'>{children}</div>
+
+      {/* Main content */}
+      <div className='flex-1 overflow-y-auto bg-slate-50'>{children}</div>
     </div>
   )
-} 
+}
 
 export default SideBar
