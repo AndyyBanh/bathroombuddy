@@ -16,7 +16,7 @@ public class FilterConfig {
     public FilterRegistrationBean<RateLimitFilter> rateLimitFilters(RateLimitFilter filter) {
         FilterRegistrationBean<RateLimitFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(filter);
-        registrationBean.addUrlPatterns("/api/v1/request");
+        registrationBean.addUrlPatterns("/api/v1/request", "/api/v1/auth/login");
         registrationBean.setOrder(1);
         return registrationBean;
     }
