@@ -11,6 +11,8 @@ import com.bathroombuddy.bathroombuddy.repository.RequestRepository;
 import com.bathroombuddy.bathroombuddy.repository.SuppliesRepository;
 import com.bathroombuddy.bathroombuddy.repository.WashroomRepository;
 import com.bathroombuddy.bathroombuddy.service.RequestService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,8 +31,11 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public List<RequestDto> getAllRequests() {
-        return this.requestRepository.findAll().stream().map(this::mapToDTo).collect(Collectors.toList());
+    public List<RequestDto> getAllRequests(String status, Pageable pageable) {
+        Page<Request> page = (status == null || status.isBlank())
+                ? this.requestRepository.findAll(pageable)
+                : this.requestRepository.findByStatus(status, pageable);
+        return page.getContent().stream().map(this::mapToDTo).collect(Collectors.toList());
     }
 
     @Override

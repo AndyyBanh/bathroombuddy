@@ -4,6 +4,7 @@ import com.bathroombuddy.bathroombuddy.dto.RequestDto;
 import com.bathroombuddy.bathroombuddy.model.Request;
 import com.bathroombuddy.bathroombuddy.service.RequestService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/request")
 public class RequestController {
+    private static final int PAGE_SIZE = 10;
     private final RequestService requestService;
 
     @Autowired
@@ -21,8 +23,10 @@ public class RequestController {
     }
 
     @GetMapping
-    public ResponseEntity<List<RequestDto>> getAllRequests() {
-        return ResponseEntity.ok(this.requestService.getAllRequests());
+    public ResponseEntity<List<RequestDto>> getAllRequests(
+            @RequestParam(required = false, defaultValue = "1") int pageNo,
+            @RequestParam(required = false) String status) {
+        return ResponseEntity.ok(this.requestService.getAllRequests(status, PageRequest.of(Math.max(pageNo - 1, 0), PAGE_SIZE)));
     }
 
     @GetMapping("/{id}")

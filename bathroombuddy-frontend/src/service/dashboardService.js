@@ -1,8 +1,11 @@
 import axiosInstance from "../api/axiosInstance";
 
 // Request service
-export const getAllRequests = () => 
-    axiosInstance.get('/v1/request');
+export const getAllRequests = ({ pageNo = 1, status } = {}) => {
+    const params = { pageNo };
+    if (status) params.status = status;
+    return axiosInstance.get('/v1/request', { params });
+};
 
 export const getRequestById = (id) =>
     axiosInstance.get(`/v1/request/${id}`);

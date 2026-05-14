@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Plus } from 'lucide-react'
+import { Plus, ChevronLeft, ChevronRight } from 'lucide-react'
 import SideBar from '../../components/SideBar'
 import { createRequest, deleteRequest, getAllRequests, getAllSupplies, getAllWashrooms, updateRequest } from '../../service/dashboardService'
 import Modal from '../../components/Modal'
@@ -11,21 +11,33 @@ const statusStyles = {
   COMPLETED:   'bg-green-50 text-green-700 border border-green-200',
 }
 
+const PAGE_SIZE = 10
+
 const Request = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [requests, setRequests] = useState([])
   const [formData, setFormData] = useState({ status: '', suppliesId: '', washroomId: '' })
   const [error, setError] = useState(null)
   const [editingRequest, setEditingRequest] = useState(null)
-  const [searchTerm, setSearchTerm] = useState('')
+  const [statusFilter, setStatusFilter] = useState('')
+  const [pageNo, setPageNo] = useState(1)
   const [supplies, setSupplies] = useState([])
   const [washrooms, setWashrooms] = useState([])
 
   useEffect(() => {
-    fetchRequestData()
     fetchWashroomsData()
     fetchSuppliesData()
   }, [])
+
+  useEffect(() => {
+    fetchRequestData()
+  }, [statusFilter, pageNo])
+
+  useEffect(() => {
+    if (pageNo > 1 && requests.length === 0) {
+      setPageNo(pageNo - 1)
+    }
+  }, [requests, pageNo])
 
   const getSupplyName = (id) => {
     const supply = supplies.find(s => s.id === id)
@@ -73,7 +85,7 @@ const Request = () => {
 
   const fetchRequestData = async () => {
     try {
-      const response = await getAllRequests()
+      const response = await getAllRequests({ pageNo, status: statusFilter })
       setRequests(response.data)
     } catch (error) {
       setError(error.response?.data?.message || 'Something went wrong. Please try again.')
@@ -90,7 +102,11 @@ const Request = () => {
     try {
       await createRequest(status, parseInt(suppliesId), parseInt(washroomId))
       toast.success('Request successfully created')
-      fetchRequestData()
+      if (pageNo === 1) {
+        fetchRequestData()
+      } else {
+        setPageNo(1)
+      }
       setIsModalOpen(false)
       setFormData({ status: '', suppliesId: '', washroomId: '' })
       setError(null)
@@ -150,10 +166,6 @@ const Request = () => {
     if (status === 'COMPLETED') return 'Completed'
   }
 
-  const filteredRequest = requests.filter(request =>
-    request.status.toLowerCase().includes(searchTerm.toLowerCase())
-  )
-
   return (
     <SideBar>
       <div className='p-8 max-w-6xl mx-auto'>
@@ -163,13 +175,16 @@ const Request = () => {
         </div>
 
         <div className='flex items-center justify-between gap-4 mb-6'>
-          <input
-            type='text'
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder='Search by status...'
+          <select
+            value={statusFilter}
+            onChange={(e) => { setStatusFilter(e.target.value); setPageNo(1); }}
             className='flex-1 border border-slate-200 bg-white rounded-xl px-3 py-2.5 text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-400 transition'
-          />
+          >
+            <option value=''>All Statuses</option>
+            <option value='PENDING'>Pending</option>
+            <option value='IN_PROGRESS'>In Progress</option>
+            <option value='COMPLETED'>Completed</option>
+          </select>
           <button
             onClick={handleOpenAddModal}
             className='inline-flex items-center bg-slate-900 hover:bg-slate-800 text-white text-sm font-semibold px-4 py-2.5 rounded-xl transition-colors shrink-0'
@@ -192,14 +207,14 @@ const Request = () => {
               </tr>
             </thead>
             <tbody className='divide-y divide-slate-100'>
-              {filteredRequest.length === 0 ? (
+              {requests.length === 0 ? (
                 <tr>
                   <td colSpan='4' className='px-5 py-8 text-center text-slate-400 text-sm'>
-                    {searchTerm ? `No requests matching "${searchTerm}"` : 'No requests available.'}
+                    {statusFilter ? `No requests with status "${formatStatus(statusFilter)}"` : 'No requests available.'}
                   </td>
                 </tr>
               ) : (
-                filteredRequest.map((request) => (
+                requests.map((request) => (
                   <tr key={request.id} className='hover:bg-slate-50'>
                     <td className='px-5 py-3.5'>
                       <span className={`inline-flex text-xs font-semibold px-2.5 py-0.5 rounded-full ${statusStyles[request.status]}`}>
@@ -229,6 +244,26 @@ const Request = () => {
               )}
             </tbody>
           </table>
+        </div>
+
+        <div className='flex items-center justify-between mt-4'>
+          <button
+            onClick={() => setPageNo(p => Math.max(p - 1, 1))}
+            disabled={pageNo === 1}
+            className='inline-flex items-center gap-1 text-sm font-medium text-slate-700 bg-white border border-slate-200 rounded-xl px-3 py-2 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition'
+          >
+            <ChevronLeft className='h-4 w-4' />
+            Prev
+          </button>
+          <span className='text-sm text-slate-500'>Page {pageNo}</span>
+          <button
+            onClick={() => setPageNo(p => p + 1)}
+            disabled={requests.length < PAGE_SIZE}
+            className='inline-flex items-center gap-1 text-sm font-medium text-slate-700 bg-white border border-slate-200 rounded-xl px-3 py-2 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition'
+          >
+            Next
+            <ChevronRight className='h-4 w-4' />
+          </button>
         </div>
       </div>
 
