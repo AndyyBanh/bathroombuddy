@@ -5,7 +5,11 @@ import com.bathroombuddy.bathroombuddy.exceptions.SuppliesNotFoundException;
 import com.bathroombuddy.bathroombuddy.model.Supplies;
 import com.bathroombuddy.bathroombuddy.repository.SuppliesRepository;
 import com.bathroombuddy.bathroombuddy.service.SuppliesService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -16,7 +20,7 @@ import java.util.stream.Collectors;
 public class SuppliesServiceImpl implements SuppliesService {
 
     private final SuppliesRepository suppliesRepository;
-
+    private static final Logger logger = LoggerFactory.getLogger(SuppliesServiceImpl.class);
     @Autowired
     public SuppliesServiceImpl(SuppliesRepository suppliesRepository) {
         this.suppliesRepository = suppliesRepository;
@@ -33,7 +37,9 @@ public class SuppliesServiceImpl implements SuppliesService {
 
 
     @Override
+    @Cacheable(value = "supplies", key = "'all'")
     public List<SuppliesDto> getAllSupplies() {
+        logger.info(">>>> fetching all supplies");
         return this.suppliesRepository.findAll().stream().map(this::mapToDto).collect(Collectors.toList());
     }
 
@@ -44,14 +50,17 @@ public class SuppliesServiceImpl implements SuppliesService {
     }
 
     @Override
+    @CacheEvict(value = "supplies", allEntries = true)
     public void deleteSuppliesById(Long id) {
+        logger.info(">>>> deleting supplies with associated id " + id);
         Supplies supply = this.suppliesRepository.findById(id).orElseThrow(() -> new SuppliesNotFoundException("Supplies with associated id " + id + " not found"));
         this.suppliesRepository.delete(supply);
     }
 
     @Override
+    @CacheEvict(value = "supplies", allEntries = true)
     public SuppliesDto createSupplies(SuppliesDto suppliesDto) {
-
+        logger.info(">>>> creating supplies");
         Supplies supply = new Supplies();
         supply.setType(suppliesDto.getType());
         supply.setQuantity(suppliesDto.getQuantity());
@@ -69,7 +78,9 @@ public class SuppliesServiceImpl implements SuppliesService {
     }
 
     @Override
+    @CacheEvict(value = "supplies", allEntries = true)
     public SuppliesDto updateSupplies(SuppliesDto suppliesDto, Long id) {
+        logger.info(">>>> updating supplies with associated id " + id);
         Supplies supply = this.suppliesRepository.findById(id).orElseThrow(() -> new SuppliesNotFoundException("Supplies with associated id " + id + " not found"));
 
         supply.setType(suppliesDto.getType());
@@ -78,6 +89,4 @@ public class SuppliesServiceImpl implements SuppliesService {
         Supplies updatedSupply = this.suppliesRepository.save(supply);
         return mapToDto(updatedSupply);
     }
-
-
 }
