@@ -14,6 +14,7 @@ import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.codec.ByteArrayCodec;
 import io.lettuce.core.codec.RedisCodec;
 import io.lettuce.core.codec.StringCodec;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -74,15 +75,27 @@ public class RedisConfig {
 
         return LettuceBasedProxyManager.builderFor(redisConnection)
                 .withExpirationStrategy(
-                        ExpirationAfterWriteStrategy.basedOnTimeForRefillingBucketUpToMax(Duration.ofMinutes(1L)))
+                        ExpirationAfterWriteStrategy.basedOnTimeForRefillingBucketUpToMax(Duration.ofMinutes(2L)))
                 .build();
     }
 
-    // blueprint
     @Bean
-    public Supplier<BucketConfiguration> bucketConfiguration() {
-        return () -> BucketConfiguration.builder()
-                .addLimit(Bandwidth.simple(5L, Duration.ofMinutes(5L)))
+    @Qualifier("generalApiBucketConfig")
+    public Supplier<BucketConfiguration> generalApiBucketConfig() {
+        Bandwidth limit = Bandwidth.builder()
+                .capacity(100)
+                .refillGreedy(100, Duration.ofMinutes(1))
                 .build();
+        return () -> BucketConfiguration.builder().addLimit(limit).build();
+    }
+
+    @Bean
+    @Qualifier("authBucketConfig")
+    public Supplier<BucketConfiguration> authBucketConfig() {
+        Bandwidth limit = Bandwidth.builder()
+                .capacity(5)
+                .refillGreedy(5, Duration.ofMinutes(1))
+                .build();
+        return () -> BucketConfiguration.builder().addLimit(limit).build();
     }
 }

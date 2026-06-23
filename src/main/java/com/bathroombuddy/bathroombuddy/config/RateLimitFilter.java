@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.function.Supplier;
@@ -19,8 +20,14 @@ import java.util.function.Supplier;
 public class RateLimitFilter implements Filter {
 
     private final Logger logger = LoggerFactory.getLogger(RateLimitFilter.class);
+
     @Autowired
-    Supplier<BucketConfiguration> bucketConfiguration;
+    @Qualifier("generalApiBucketConfig")
+    Supplier<BucketConfiguration> generalApiBucketConfig;
+
+    @Autowired
+    @Qualifier("authBucketConfig")
+    Supplier<BucketConfiguration> authBucketConfig;
 
     @Autowired
     ProxyManager<String> proxyManager;
@@ -30,10 +37,16 @@ public class RateLimitFilter implements Filter {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         HttpServletRequest httpRequest = (HttpServletRequest) request;
 
-        if ((httpRequest.getRequestURI().equals("/api/v1/request") && httpRequest.getMethod().equals("POST"))
-                || (httpRequest.getRequestURI().equals("/api/v1/auth/login") && httpRequest.getMethod().equals("POST"))) {
-            String key = httpRequest.getRemoteAddr();
-            Bucket bucket = proxyManager.builder().build(key, bucketConfiguration);
+        String uri = httpRequest.getRequestURI();
+        boolean isPost = httpRequest.getMethod().equals("POST");
+        boolean isApiRequest = uri.equals("/api/v1/request") && isPost;
+        boolean isAuthLogin = uri.equals("/api/v1/auth/login") && isPost;
+
+        if (isApiRequest || isAuthLogin) {
+            String ip = httpRequest.getRemoteAddr();
+            String key = (isAuthLogin ? "auth:" : "api:") + ip;
+            Supplier<BucketConfiguration> config = isAuthLogin ? authBucketConfig : generalApiBucketConfig;
+            Bucket bucket = proxyManager.builder().build(key, config);
 
             ConsumptionProbe probe = bucket.tryConsumeAndReturnRemaining(1);
 
